@@ -1,0 +1,25 @@
+uMouseSimulator
+
+I. Maze Environment
+    16x16 Cells with wall information
+
+II. Mouse
+    Movement
+        Move 1 cell
+        Turn around
+        Face Left
+        Face Right
+    Sensory
+        Wall values of current cell
+        Mouse depiction of maze (unflooded maze)
+    Solving
+        Wall-Follower
+        FloodFill
+
+III. Simulator
+    Rules
+        Can move one cell at a time
+        Can look at current cell walls
+        Starts at Cell (15,0)
+        Finish at Cells (7,7),(7,8),(8,7),(8,8)
+
