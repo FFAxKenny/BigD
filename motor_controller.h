@@ -21,12 +21,12 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+    
     /* High-Level Functions */
-    void MoveForward(Motor *LMotor, Motor *RMotor);
-    void FaceLeft(Motor *LMotor, Motor *RMotor);
-    void FaceRight(Motor *LMotor, Motor *RMotor);
-    void FaceBack(Motor *LMotor, Motor *RMotor);
+    void MoveForward(int distance);
+    void FaceLeft(void);
+    void FaceRight(void);
+    void FaceBack(void);
 
     /* Low-Level Functions */
     void Move(Motor motor);

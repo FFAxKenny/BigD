@@ -19,18 +19,22 @@
 float value;                        // ADC1BUF0 value as a float
 int corr;                           // Correction Integer
 
-void ConvertADC(void) {
-    AD1CON1bits.SAMP = 1;           // Start Conversion
-    ADC1BUF0 = 0x0000;              // Clear ADC1 Buffer
-    while (!AD1CON1bits.DONE);      // Conversion done? Waiting for 1
-    AD1CON1bits.DONE = 0;           // Clear conversion done status bit
+void ConvertADC(int select) {
+    AD1CSSL = 0;                        // Clear scan
+    ADC1BUF0 = 0x0000;                  // Clear ADC1 Buffer
+    AD1CON1bits.ADON = 1;               // Begin Sampling Sequence
+    AD1CON1bits.SAMP = 1;               // Start Conversion
+    while (!AD1CON1bits.DONE);          // Conversion done? Waiting for 1
+    AD1CON1bits.DONE = 0;               // Clear conversion done status bit
+   
 }
 
 int CalcCorr(void) {  
-    value = (float) 1 / ADC1BUF0;   // Take Inverse of buffer value
-    value = value * CORR_CONSTANT;  // Multiply by CORR_CONSTANT
-    corr = (int) value;             // Cast float to integer
-    return corr;
+    //value = (float) 1 / ADC1BUF0;       // Take Inverse of buffer value
+    //value = value * CORR_CONSTANT;      // Multiply by CORR_CONSTANT
+    //corr = (int) value;                 // Cast float to integer
+    //return corr;
+    return ADC1BUF0;
 }
 
 

@@ -15,9 +15,9 @@ extern "C" {
 
 typedef struct Motor {
       int speed;
+      int phase;
       int step_count;
       int direction;
-      int phase;
       int LeftorRight;
 } Motor;
 

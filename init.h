@@ -12,6 +12,7 @@
 
 /* Functions */
 void TheBirthOfBigD(void);
+void ConfigureTimers(void);
 
 #ifdef	__cplusplus
 extern "C" {

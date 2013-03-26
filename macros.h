@@ -14,17 +14,19 @@ extern "C" {
 #endif
 
 /* TIMER */
-#define PERIOD 50000 //20000
+#define PERIOD          18000
+#define PERIOD_SLOW     21000
+#define PERIOD_FAST     17000
 
 /* SENSOR CONSTANT */
-#define CORR_CONSTANT 200000    //200000
-#define VELOCITY 200
+#define CORR_CONSTANT   4000
+#define VELOCITY        200
 
 /* DRIVING MOVES CONSTANTS */
-#define FORWARD_COUNT     200
-#define FACE_LEFT_COUNT   200
-#define FACE_RIGHT_COUNT  200
-#define FACE_BACK_COUNT   200
+#define MOVE_FORWARD_COUNT  215
+#define FACE_LEFT_COUNT     60
+#define FACE_RIGHT_COUNT    61
+#define FACE_BACK_COUNT     60
 
 /* DRIVING DEFINITIONS */
 #define FORWARD 0

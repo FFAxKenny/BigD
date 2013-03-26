@@ -28,7 +28,7 @@ extern volatile int SensorR2;    // Sensor 1 Value
 
 /* Functions */
 
-void ConvertADC(void);          // Stops sampling and begins coverting.
+void ConvertADC(int sensor);          // Stops sampling and begins coverting.
                                 //  Converts selected sensor to appropriate
                                 //  sensor value as raw data.
 
