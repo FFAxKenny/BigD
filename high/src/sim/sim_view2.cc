@@ -4,8 +4,6 @@
 #include<stdio.h>
 #include<graphics.h>
 
-using namespace std;
-
 #include"../mouse/mouse.h"
 
 #define CW 25
@@ -25,7 +23,7 @@ class Display {
 	       void drawCell(Cell cell,int x, int y, bool red);
            void drawMouseAnim();
            void floodFill();
-           void wallFollower();
+           void solvingAlgorithm();
 
            bool mouseIsInCell(int row, int col);
 
@@ -37,10 +35,10 @@ class Display {
            Maze *maze;
 };
 
-int main() {
+int main(int argc, char* argv[]) {
  int gd=VGA,gm=VGAMAX;
  initgraph(&gd,&gm,NULL);
- Display *display = new Display("../../mazes/j1.maze.txt");
+ Display *display = new Display(argv[1]);
 
  setbkcolor(BLACK);
     display->drawMaze();
@@ -52,7 +50,7 @@ int main() {
     display->drawMouse();
     delay(100);
     display->eraseMouse();
-    display->wallFollower();
+    display->solvingAlgorithm();
    
  }
  getch();
@@ -67,60 +65,8 @@ void Display::floodFill() {
 
 }
 
-void Display::wallFollower() {
-    int cNorth;
-    int cEast;
-    int cSouth;
-    int cWest;
-    int wallFront;
-    int wallRight;
-    int wallLeft;
-    // See what walls are in the cell
-    cNorth=maze->actualMap[mouse->row][mouse->col].north;
-    cEast=maze->actualMap[mouse->row][mouse->col].east;
-    cSouth=maze->actualMap[mouse->row][mouse->col].south;
-    cWest=maze->actualMap[mouse->row][mouse->col].west;
-
-    if(mouse->ori==0) {
-        wallFront=cNorth;
-        wallRight=cEast;
-        wallLeft=cWest;
-    }
-    else if(mouse->ori==1) {
-        wallFront=cEast;
-        wallRight=cSouth;
-        wallLeft=cNorth;
-    }
-    else if(mouse->ori==2) {
-        wallFront=cSouth;
-        wallRight=cWest;
-        wallLeft=cEast;
-    }
-    else {
-        wallFront=cWest;
-        wallRight=cNorth;
-        wallLeft=cSouth;
-    }
-
-    // Decide where to turn
-    if(!wallRight) {
-        faceRight(mouse);
- //       printf("Mouse turned right\n");
-    } 
-    else if(!wallFront) {
-        // Do Nothing
-//        printf("Mouse did nothing\n");
-    }
-    else if(!wallLeft) {
-        faceLeft(mouse);
- //       printf("Mouse turned left\n");
-    }
-    else {
-        faceBack(mouse);
-  //      printf("Moused turned around\n");
-    }
-    moveForward(mouse);
-   //     printf("Mouse moved %d\n",mouse->ori);
+void Display::solvingAlgorithm() {
+    wallFollower(maze,mouse);
 }
 
 Display::Display(char* mazeFilePath) {
