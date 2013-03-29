@@ -17,3 +17,9 @@ nbproject/*
 *.lai
 *.la
 *.a
+
+# Eclipse
+.project
+.cproject
+*.swp
+.settings/
