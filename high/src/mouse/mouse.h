@@ -10,6 +10,11 @@
 #include"../../util.h"
 #include"../env/maze.h"
 
+typedef struct Coordinates {
+	int row;
+	int col;
+} Coordinates;
+
 typedef struct mCell {
     unsigned walls:4; // Wall values: xxxx = NESW (0 false | 1 true)
     int distance;
@@ -19,7 +24,7 @@ typedef struct Mouse {
     int ori; // Orientation. Which way the mouse is facing. 0123=NESW
     int row; // Location. Where the mouse is in the maze
     int col;
-    int mCell[16][16];
+    mCell* mCell[16][16];
 } Mouse;
 
 void initializeMouse(Mouse **mouse);
@@ -31,3 +36,5 @@ void faceLeft(Mouse *mouse);
 void faceRight(Mouse *mouse);
 void faceBack(Mouse *mouse);
 void wallFollower(Maze *maze, Mouse *mouse);
+void floodFill(Maze *maze, Mouse *mouse);
+void flood(Maze *maze, Mouse *mouse);
