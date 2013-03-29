@@ -1,23 +1,31 @@
 /*
- * list
+ * stack.h
  *
  *  Created on: Mar 28, 2013
  *      Author: ejay
  */
 
-#ifndef LIST_
-#define LIST_
+#ifndef STACK_
+#define STACK_
 
 #include"../../util.h"
 
-#define MAX 256
+typedef struct Coordinates {
+	int row;
+	int col;
+} Coordinates;
+
+typedef struct Node {
+	void *content;
+	struct Node *next;
+} Node;
 
 typedef struct Stack {
-	void *content;
-	struct Stack *next;
+	Node *head;
+	int count;
 } Stack;
 
-void push(Stack **stack, void *newElem);
-void *pop(Stack **stack);
+void push(Stack *stack, void *newElem);
+void *pop(Stack *stack);
 
-#endif /* LIST_ */
+#endif /* STACK_ */

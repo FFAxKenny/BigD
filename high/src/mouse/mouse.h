@@ -9,13 +9,9 @@
 
 #include"../../util.h"
 #include"../env/maze.h"
+#include"stack.h"
 
 #define MAX 256
-
-typedef struct Coordinates {
-	int row;
-	int col;
-} Coordinates;
 
 typedef struct mCell {
     unsigned walls:4; // Wall values: xxxx = NESW (0 false | 1 true)
@@ -28,14 +24,6 @@ typedef struct Mouse {
     int col;
     mCell* mCell[16][16];
 } Mouse;
-
-int getRow(Coordinates * coor) {
-	return coor->row;
-}
-
-int getCol(Coordinates * coor) {
-	return coor->col;
-}
 
 void initializeMouse(Mouse **mouse);
 int finish(Mouse *mouse);

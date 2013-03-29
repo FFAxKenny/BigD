@@ -9,5 +9,5 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef enum { FALSE, TRUE } Boolean;
-typedef enum { north, east, south, west } Direction;
+//typedef enum { FALSE, TRUE } Boolean;
+//typedef enum { north, east, south, west } Direction;
