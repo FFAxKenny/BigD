@@ -10,6 +10,8 @@
 #include"../../util.h"
 #include"../env/maze.h"
 
+#define MAX 256
+
 typedef struct Coordinates {
 	int row;
 	int col;
@@ -26,6 +28,14 @@ typedef struct Mouse {
     int col;
     mCell* mCell[16][16];
 } Mouse;
+
+int getRow(Coordinates * coor) {
+	return coor->row;
+}
+
+int getCol(Coordinates * coor) {
+	return coor->col;
+}
 
 void initializeMouse(Mouse **mouse);
 int finish(Mouse *mouse);
