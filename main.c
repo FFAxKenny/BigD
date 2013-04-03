@@ -19,26 +19,22 @@
 #endif
 
 
-    
-
 _FOSC(OSCIOFNC_ON & FCKSM_CSDCMD & POSCMD_NONE)     // Oscillator Configuration
 _FOSCSEL(FNOSC_FRC)                                 // Select Internal FRC
 _FWDT(FWDTEN_OFF)                                   // Turn off WatchDog Timer
-_FGS(GCP_OFF)                                       // Turn off Code Protect
+_FGS(GCP_OFF)                                       // Turn off code protect
 
 
 int main(void) {
-    TheBirthOfBigD();               /* Initialize I/O, ADC, Timer, & Switch */
+    TheBirthOfBigD();               /* Initialize I/O and ADC */
+    ConfigureTimers();              /* Initialize Timer1, Timer2 & Timer3 */
 
     while(1) {
-        MoveForward(215);
-        if(QueueTurnStage == 1) {
-            FaceRight();
-        }
+        MoveForward(210);
 
     }
-    
-    
+
+
     return (EXIT_SUCCESS);
 }
 

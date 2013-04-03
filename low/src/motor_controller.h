@@ -15,13 +15,12 @@
 #define RM2 (LATAbits.LATA4)
 #define RM1 (LATBbits.LATB4)
  
-#ifndef CONTROLLER_H
-#define	CONTROLLER_H
+#ifndef MOTOR_CONTROLLER_H
+#define	MOTOR_CONTROLLER_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-    
+    /* Timer Interrupt Routine */
+    void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void);
+
     /* High-Level Functions */
     void MoveForward(int distance);
     void FaceLeft(void);
@@ -29,13 +28,22 @@ extern "C" {
     void FaceBack(void);
 
     /* Low-Level Functions */
-    void Move(Motor motor);
     void StepLMotor(Motor motor);
     void StepRMotor(Motor motor);
+
+   
+    extern int TurnStage, MoveStage, QueueTurnStage;
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+    
+
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* CONTROLLER_H */
+#endif	/* MOTOR_CONTROLLER_H */
 

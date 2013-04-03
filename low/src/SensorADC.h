@@ -21,19 +21,12 @@ extern "C" {
 
 
 /* Variables */
-extern volatile int SensorL2;    // Sensor 4 Value
-extern volatile int SensorL1;    // Sensor 3 Value
-extern volatile int SensorR1;    // Sensor 2 Value
-extern volatile int SensorR2;    // Sensor 1 Value
 
 /* Functions */
 
-void ConvertADC(int sensor);          // Stops sampling and begins coverting.
+int ReadADC(int channel);       // Stops sampling and begins coverting.
                                 //  Converts selected sensor to appropriate
                                 //  sensor value as raw data.
-
-int CalcCorr(void);             // Returns Tracking correction
-
 
 
 
