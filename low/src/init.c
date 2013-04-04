@@ -43,15 +43,16 @@ void TheBirthOfBigD(void) {
     AD1CSSL = 0;                        // Clear scan
 
 
-    /**************************** Start Switch ******************************/
-    int i;
+    /**************************** Start Switch *****************************/
+    //int i;
     while(PORTBbits.RB15 != 1) {        // Wait for Start Button to be Pressed
         if(PORTBbits.RB15 == 1) {
-            for(i=0; i<30000; i++) {
+            /*for(i=0; i<30000; i++) {
                 PORTBbits.RB14 = 1;     // ON Buzzer Noise
             }
-                PORTBbits.RB14 = 0;     // OFF Buzzer Noise
+                PORTBbits.RB14 = 0;     // OFF Buzzer Noise*/
                 break;
             }
         }
+     
 }

@@ -30,21 +30,33 @@ _FGS(GCP_OFF)                                       // Turn off Code Protect
 int main(void) {
     TheBirthOfBigD();               /* Initialize I/O, ADC, Timer, & Switch */
 
-    TurnStage = 0;
-    MoveStage = 0;
-    QueueTurnStage = 0;
-    //StopTracking = 0;
+
+    QueueAheadWall = 0;
+    QueueRightWall = 1;
+    QueueLeftWall = 1;
+    wait();
 
     while(1) {
 
 
-        //MoveForward(300);
-        if(QueueTurnStage == 1) {
+        if(QueueRightWall == 1 && QueueLeftWall == 1 && QueueAheadWall == 1)
+        {
+            FaceRight();
+            FaceRight();
+        }
+
+        else if(QueueRightWall == 1 && QueueAheadWall == 1) {
+                FaceLeft();
+            }
+
+        else if(QueueRightWall == 0) {
             FaceRight();
         }
         
+            MoveForward(216);
         
-
+            
+        
     }
     
     

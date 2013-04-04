@@ -15,21 +15,24 @@ extern "C" {
 
 
 /* SENSOR VALUES */
-#define WALL_AHEAD      320
-#define NO_WALL         210
+#define WALL_AHEAD      450
+#define NO_LEFT_WALL    230
+#define NO_RIGHT_WALL   170 //200
+    
 #define LEFT_WALL_MAX   580
-#define LEFT_WALL_MIN   300
-#define RIGHT_WALL_MAX  425
+#define LEFT_WALL_MIN   350 //300
+
+#define RIGHT_WALL_MAX  350
 #define RIGHT_WALL_MIN  250
 
 
 /* TIMER */
-#define PERIOD          30000
+#define PERIOD          22000
     
 /* DRIVING MOVES CONSTANTS */
-#define MOVE_FORWARD_COUNT  229
-#define FACE_LEFT_COUNT     300
-#define FACE_RIGHT_COUNT    62
+#define MOVE_FORWARD_COUNT  214
+#define FACE_LEFT_COUNT     60
+#define FACE_RIGHT_COUNT    59
 
 /* DRIVING DEFINITIONS */
 #define FORWARD 0

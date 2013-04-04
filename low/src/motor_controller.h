@@ -34,7 +34,8 @@
     void StepRMotor(Motor motor);
 
    
-    extern int TurnStage, MoveStage, QueueTurnStage;
+    extern int TurnStage, MoveStage, QueueAheadWall, TurnLeft, 
+                QueueRightWall, QueueLeftWall;
 
 #ifdef	__cplusplus
 extern "C" {

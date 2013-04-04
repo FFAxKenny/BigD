@@ -15,7 +15,8 @@
 #include "macros.h"
 #endif
 
-int TurnStage, MoveStage, QueueTurnStage, StopTracking;
+int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft, 
+        QueueRightWall, QueueLeftWall;
 
 /* Motor Declaration */
     Motor LMotor;
@@ -101,18 +102,10 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
         for(i=0; i<6000; i++);
         for(i=0; i<6000; i++);
         for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
-        for(i=0; i<6000; i++);
+
         for(i=0; i<6000; i++);
         for(i=0; i<6000; i++);
         T1CONbits.TON = 1;
-
     }
 
     void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
@@ -124,9 +117,6 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
         Sensor4 = ReadADC(5);
 
         /* PERFORM MAPPING STORAGE HERE */
-
-        if(Sensor2+Sensor3 > WALL_AHEAD) QueueTurnStage = 1;
-
 
         if(MoveStage == 1) {
 
@@ -141,13 +131,11 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
                 RMotor.step_count++;                // Increment Motor Step Count
              } // End TurnStage
 
-            
             else {
 
                 /* If there is right wall to track off... */
-                if(Sensor4 > NO_WALL) {
-
-                    
+                if(Sensor4 > NO_RIGHT_WALL) {
+       
                     if(Sensor4 > RIGHT_WALL_MAX) {
                         if(RMotor.phase < 4) RMotor.phase++; else RMotor.phase = 1;
                         StepRMotor(RMotor);
@@ -155,7 +143,7 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
                     }
 
                     /* If Left Position, Step ONLY Left Motor*/
-                    else if(Sensor4 > NO_WALL && Sensor4 < RIGHT_WALL_MIN) {
+                    else if(Sensor4 > NO_RIGHT_WALL && Sensor4 < RIGHT_WALL_MIN) {
                         if(LMotor.phase < 4) LMotor.phase++; else LMotor.phase = 1;
                         StepLMotor(LMotor);
                         LMotor.step_count++;
@@ -169,8 +157,15 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
                         LMotor.step_count++;
                         RMotor.step_count++;
                     }
+                    
             }
+
+                // No right wall....
+                
                 else {
+
+                    
+
                         if(LMotor.phase < 4) LMotor.phase++; else LMotor.phase = 1;
                         if(RMotor.phase < 4) RMotor.phase++; else RMotor.phase = 1;
                         StepLMotor(LMotor);
@@ -222,30 +217,93 @@ int TurnStage, MoveStage, QueueTurnStage, StopTracking;
         RMotor.direction = FORWARD;
 
         // Step Motors until Distance obtained
-        //while(RMotor.step_count<distance && LMotor.step_count<distance);
-     
+        while(RMotor.step_count<distance && LMotor.step_count<distance);
+
+        /* Determine corrections after ... */
+
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
     }
 
     void FaceRight(void){
-
         MoveStage = 1;
         TurnStage = 1;
-
-        // Reset Motor Step Count
+         // Reset Motor Step Count
         LMotor.step_count = 0;
         RMotor.step_count = 0;
-
-        // Set Motor Direction
+         // Set Motor Direction
         LMotor.direction = FORWARD;
         RMotor.direction = REVERSE;
-
         // Perform appropriate amount of steps to face right
         while( RMotor.step_count < FACE_RIGHT_COUNT && LMotor.step_count < FACE_RIGHT_COUNT);
 
-        //TurnStage = 0;
-        QueueTurnStage = 0;
-        
 
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
+    
+
+         
+        
+    }
+
+    void FaceLeft() {
+        MoveStage = 1;
+        TurnStage = 1;
+         // Reset Motor Step Count
+        LMotor.step_count = 0;
+        RMotor.step_count = 0;
+         // Set Motor Direction
+        LMotor.direction = REVERSE;
+        RMotor.direction = FORWARD;
+        // Perform appropriate amount of steps to face right
+        while( RMotor.step_count < FACE_LEFT_COUNT && LMotor.step_count < FACE_LEFT_COUNT);
+
+
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
+    
     }
 
     void StepLMotor(Motor motor) {
