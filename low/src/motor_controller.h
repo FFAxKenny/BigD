@@ -18,6 +18,8 @@
 #ifndef MOTOR_CONTROLLER_H
 #define	MOTOR_CONTROLLER_H
 
+    void wait(void);
+
     /* Timer Interrupt Routine */
     void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void);
 
