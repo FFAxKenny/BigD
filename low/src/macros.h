@@ -15,7 +15,7 @@ extern "C" {
 
 
 /* SENSOR VALUES */
-#define WALL_AHEAD      450
+#define WALL_AHEAD      400
 #define NO_LEFT_WALL    230
 #define NO_RIGHT_WALL   170 //200
     
@@ -27,7 +27,7 @@ extern "C" {
 
 
 /* TIMER */
-#define PERIOD          22000
+#define PERIOD          19000
     
 /* DRIVING MOVES CONSTANTS */
 #define MOVE_FORWARD_COUNT  214
