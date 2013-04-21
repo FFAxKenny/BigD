@@ -11,7 +11,6 @@
 #include"../env/maze.h"
 #include"stack.h"
 
-#define MAX 256
 
 typedef struct mCell {
     unsigned walls:4; // Wall values: xxxx = NESW (0 false | 1 true)
@@ -22,7 +21,7 @@ typedef struct Mouse {
     int ori; // Orientation. Which way the mouse is facing. 0123=NESW
     int row; // Location. Where the mouse is in the maze
     int col;
-    mCell* mCell[16][16];
+    mCell* (*cells)[16];
 } Mouse;
 
 void initializeMouse(Mouse **mouse);

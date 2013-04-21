@@ -22,17 +22,17 @@ void flood(Maze *maze, Mouse *mouse) {
 	int lvl = 0;
 	// 2. Initialize the array DistanceValue
 	// so that all values = 255.
-	int i, j;
+	int i, j, k=255;
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 16; j++) {
-			mouse->mCell[i][j]->distance = 255;
+			mouse->cells[i][j]->distance = k;
 		}
 	}
 	// 3. Place the destination cells in an array
 	// called CurrentLevel
 	Coordinates* currentLvl[256];
 	int clSize=0;
-	Coordinates* coor;
+	Coordinates* coor = (Coordinates *)malloc(sizeof(Coordinates));
 	for (i = 7; i < 9; i++) {
 		for(j = 7; j < 9; j++) {
 			coor->row=i;
@@ -49,7 +49,7 @@ void flood(Maze *maze, Mouse *mouse) {
 	while(clSize!=0) {
 		// use a cell in the currentlvl
 		mCell* currentCell= mouse->
-						mCell[currentLvl[clSize]->row]
+						cells[currentLvl[clSize]->row]
 		                     [currentLvl[clSize]->col];
 		dist = currentCell->distance;
 		if(dist==255) {
