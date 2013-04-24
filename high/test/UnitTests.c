@@ -64,10 +64,20 @@ void test_Stack(void) {
 	result = pop(stack);
 	CU_ASSERT_EQUAL(result->row,5);
 	CU_ASSERT_EQUAL(result->col,10);
-	free(stack);
-	free(this);
-	free(that);
-	free(result);
+}
+
+void test_StackForDuplicates() {
+	Stack * stack = (Stack*) malloc(sizeof(Stack));
+	Coordinates * this=(Coordinates*)malloc(sizeof(Coordinates));
+	this->row = 5;
+	this->col = 10;
+	push_unique(stack,this);
+	push_unique(stack,this);
+	CU_ASSERT_EQUAL(stack->count,1);
+	Coordinates * result = (Coordinates*) malloc(sizeof(Coordinates));
+	result = pop(stack);
+	CU_ASSERT_EQUAL(result->row,5);
+	CU_ASSERT_EQUAL(result->col,10);
 }
 
 int main( void ) {
@@ -91,7 +101,7 @@ int main( void ) {
     }
     
     stackSuite = CU_add_suite("stack_test_suite", init_suite, clean_suite);
-    if( mazeSuite == NULL ) {
+    if( stackSuite == NULL ) {
         CU_cleanup_registry();
         return CU_get_error();
     }
@@ -100,23 +110,28 @@ int main( void ) {
         CU_cleanup_registry();
         return CU_get_error();
     }
-/*
+
+    if( CU_add_test(stackSuite, "test_StackForDuplicates", test_StackForDuplicates)==NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
     // Run all tests using the basic interface
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
     printf("\n");
     CU_basic_show_failures(CU_get_failure_list());
     printf("\n\n");
-*/
-/*    
+
+/*
       //Run all tests using the automated interface
       CU_automated_run_tests();
       CU_list_tests_to_file();
-      */
-
+*/
+/*
       //Run all tests using the console interface
       CU_console_run_tests();
- 
+ */
     // Clean up registry and return
     CU_cleanup_registry();
     return CU_get_error();

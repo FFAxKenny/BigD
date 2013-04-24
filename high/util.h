@@ -8,6 +8,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 //typedef enum { FALSE, TRUE } Boolean;
 //typedef enum { north, east, south, west } Direction;

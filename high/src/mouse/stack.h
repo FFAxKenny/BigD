@@ -27,5 +27,6 @@ typedef struct Stack {
 
 void push(Stack *stack, void *newElem);
 void *pop(Stack *stack);
+int push_unique(Stack *stack, void *newElem);
 
 #endif /* STACK_ */
