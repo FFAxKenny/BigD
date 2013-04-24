@@ -13,20 +13,26 @@
 extern "C" {
 #endif
 
+
+/* SENSOR VALUES */
+#define WALL_AHEAD      400
+#define NO_LEFT_WALL    230
+#define NO_RIGHT_WALL   170 //200
+    
+#define LEFT_WALL_MAX   580
+#define LEFT_WALL_MIN   350 //300
+
+#define RIGHT_WALL_MAX  350
+#define RIGHT_WALL_MIN  250
+
+
 /* TIMER */
-#define PERIOD          18000
-#define PERIOD_SLOW     21000
-#define PERIOD_FAST     17000
-
-/* SENSOR CONSTANT */
-#define CORR_CONSTANT   4000
-#define VELOCITY        200
-
+#define PERIOD          19000
+    
 /* DRIVING MOVES CONSTANTS */
-#define MOVE_FORWARD_COUNT  215
+#define MOVE_FORWARD_COUNT  214
 #define FACE_LEFT_COUNT     60
-#define FACE_RIGHT_COUNT    61
-#define FACE_BACK_COUNT     60
+#define FACE_RIGHT_COUNT    59
 
 /* DRIVING DEFINITIONS */
 #define FORWARD 0

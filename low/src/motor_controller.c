@@ -15,190 +15,295 @@
 #include "macros.h"
 #endif
 
+int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft, 
+        QueueRightWall, QueueLeftWall;
+
+/* Motor Declaration */
     Motor LMotor;
     Motor RMotor;
+
+    int i;
+
+    /* Variables */
+    volatile int Sensor1 = 0;
+    volatile int Sensor2 = 0;
+    volatile int Sensor3 = 0;
+    volatile int Sensor4 = 0;
     
-    int stepCount;
-    int LeftReading;
-    int RightReading;
-    int sensorSelect;
-    // Timer1 Interrupt controls Left Motor
-    void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void);
-    // Timer2 Interrupt controls Right Motor
-    void __attribute__((__interrupt__, __auto_psv__)) _T2Interrupt(void);
+    /* Fucntion Declarations to Create Global Variables
+    extern int TurnStage;           // If 1 = Performing Turn Function
+    extern int MoveStage;           // If 1 = Spin Motors, 0 = Stop motors
+    extern int QueueTurnStage;      // If 1 = Next Move Should Be A Turn
+    void TurnStage_GlobalDeclaration(int num) { num+=TurnStage; }
+    void MoveStage_GlobalDeclaration(int num) { num+=MoveStage; }
+    void QueueTurnStage_GlobalDeclaration(int num) { num+=QueueTurnStage; }
+    */
 
-    void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void);
+    
 
-    void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void) {
-        if(PORTBbits.RB15 == 1){
-            T1CONbits.TON = 0;
-            T2CONbits.TON = 0;
-        }
+    void wait(void) {
+        T1CONbits.TON = 0;
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
 
+        for(i=0; i<6000; i++);
+        for(i=0; i<6000; i++);
+        T1CONbits.TON = 1;
     }
-
-
 
     void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
 
-        
-        LMotor.LeftorRight = LEFT;              // Declare Left Motor
-        
-        if(LMotor.phase < 4) LMotor.phase++;    // Increment motor phase
-        else LMotor.phase = 1;
-        
-        StepLMotor(LMotor);                     // Step Motor
-        LMotor.step_count++;                    // Increment Motor Step Count
-         _T1IF = 0;                             // Clear Timer1 interrupt flag
+
+        Sensor1 = ReadADC(0);
+        Sensor2 = ReadADC(1);
+        Sensor3 = ReadADC(4);
+        Sensor4 = ReadADC(5);
+
+        /* PERFORM MAPPING STORAGE HERE */
+
+        if(MoveStage == 1) {
+
+            if(TurnStage == 1) {
+                if(LMotor.phase < 4) LMotor.phase++;    // Increment motor phase
+                    else LMotor.phase = 1;
+                if(RMotor.phase < 4) RMotor.phase++;
+                    else RMotor.phase = 1;
+                StepLMotor(LMotor);                     // Step Motors
+                StepRMotor(RMotor);
+                LMotor.step_count++;                // Increment Motor Step Count
+                RMotor.step_count++;                // Increment Motor Step Count
+             } // End TurnStage
+
+            else {
+
+                /* If there is right wall to track off... */
+                if(Sensor4 > NO_RIGHT_WALL) {
+       
+                    if(Sensor4 > RIGHT_WALL_MAX) {
+                        if(RMotor.phase < 4) RMotor.phase++; else RMotor.phase = 1;
+                        StepRMotor(RMotor);
+                        RMotor.step_count++;
+                    }
+
+                    /* If Left Position, Step ONLY Left Motor*/
+                    else if(Sensor4 > NO_RIGHT_WALL && Sensor4 < RIGHT_WALL_MIN) {
+                        if(LMotor.phase < 4) LMotor.phase++; else LMotor.phase = 1;
+                        StepLMotor(LMotor);
+                        LMotor.step_count++;
+                    }
+
+                    else {
+                        if(LMotor.phase < 4) LMotor.phase++; else LMotor.phase = 1;
+                        if(RMotor.phase < 4) RMotor.phase++; else RMotor.phase = 1;
+                        StepLMotor(LMotor);
+                        StepRMotor(RMotor);
+                        LMotor.step_count++;
+                        RMotor.step_count++;
+                    }
+                    
+            }
+
+                // No right wall....
+                
+                else {
+
+                    
+
+                        if(LMotor.phase < 4) LMotor.phase++; else LMotor.phase = 1;
+                        if(RMotor.phase < 4) RMotor.phase++; else RMotor.phase = 1;
+                        StepLMotor(LMotor);
+                        StepRMotor(RMotor);
+                        LMotor.step_count++;
+                        RMotor.step_count++;
+
+                }
+
+            }
+
+        } // End MoveStage
+         _T1IF = 0;                             // Clear Timer1 Interrupt Flag
     }
 
-    void __attribute__((__interrupt__, __auto_psv__)) _T2Interrupt(void) {
 
-        
-        RMotor.LeftorRight = RIGHT;             // Declare Right Motor
-        
-        // Calculate Correction
-        ConvertADC(3); RightReading = CalcCorr();
 
-        // Center, do not change timer
-        PR1 = PERIOD;
-        PR2 = PERIOD;
 
-        // If too close to right wall, speed up timer
-        if(RightReading > 1800) {
-            PR1 = PERIOD_SLOW;
-            PR2 = PERIOD;
-        }
 
-        // If too far from right wall, slow down timer
-        else if(RightReading < 650) {
-            PR1 = PERIOD;
-            PR2 = PERIOD_SLOW; }
-        
 
-        if(RMotor.phase < 4) RMotor.phase++;    // Increment motor phase
-        else RMotor.phase = 1;
 
-        StepRMotor(RMotor);                     // Step Motor
-        RMotor.step_count++;                    // Increment Motor Step Count
-        _T2IF = 0;                              // Clear Timer1 interrupt flag
-    }
-    int i;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     void MoveForward(int distance) {
 
-        // Reset step_count and spin LMotor Forward and RMotor Forward
-        LMotor.direction = FORWARD;
-        RMotor.direction = FORWARD;
+        MoveStage = 1;
+        TurnStage = 0;
+        
+        // Reset Motor Step Count
         LMotor.step_count = 0;
         RMotor.step_count = 0;
 
-        // Perform appropriate amount of steps to move forward one cell
-        while(RMotor.step_count<distance);
+        // Set Motor Direction
+        LMotor.direction = FORWARD;
+        RMotor.direction = FORWARD;
 
-        // Turn off timers and create Delay
-        //T1CONbits.TON = 0;
-        //T2CONbits.TON = 0;
-        /*
-         * for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
- */
-        // Reconfigre Timers
-        //ConfigureTimers();
+        // Step Motors until Distance obtained
+        while(RMotor.step_count<distance && LMotor.step_count<distance);
+
+        /* Determine corrections after ... */
+
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
     }
 
     void FaceRight(void){
-        // Reset step_count and spin LMotor Forward and RMotor Reverse
+        MoveStage = 1;
+        TurnStage = 1;
+         // Reset Motor Step Count
         LMotor.step_count = 0;
         RMotor.step_count = 0;
+         // Set Motor Direction
         LMotor.direction = FORWARD;
         RMotor.direction = REVERSE;
-
         // Perform appropriate amount of steps to face right
-        while(RMotor.step_count < FACE_RIGHT_COUNT);
+        while( RMotor.step_count < FACE_RIGHT_COUNT && LMotor.step_count < FACE_RIGHT_COUNT);
 
-        // Turn off timers and create Delay
-        /*T1CONbits.TON = 0;
-        T2CONbits.TON = 0;
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
-        for(i=0; i<6000; i++) {};
 
-        // Reconfigre Timers
-        ConfigureTimers();
-         * */
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
+    
+
+         
+        
+    }
+
+    void FaceLeft() {
+        MoveStage = 1;
+        TurnStage = 1;
+         // Reset Motor Step Count
+        LMotor.step_count = 0;
+        RMotor.step_count = 0;
+         // Set Motor Direction
+        LMotor.direction = REVERSE;
+        RMotor.direction = FORWARD;
+        // Perform appropriate amount of steps to face right
+        while( RMotor.step_count < FACE_LEFT_COUNT && LMotor.step_count < FACE_LEFT_COUNT);
+
+
+         QueueAheadWall = 0;   // No wall ahead
+         QueueRightWall = 0;    // No right wall to turn into
+         QueueLeftWall = 0;
+
+         if(Sensor2+Sensor3 > WALL_AHEAD) {
+            QueueAheadWall = 1; // If wall ahead, next move is turn...
+          }
+
+         if(Sensor1 > NO_LEFT_WALL) {
+             QueueLeftWall = 1;
+         }
+
+         if(Sensor4 > NO_RIGHT_WALL) { // and if there is a right wall, turn left...
+             QueueRightWall = 1;
+            }
+
+    
     }
 
     void StepLMotor(Motor motor) {
@@ -245,4 +350,5 @@
 
 
     
+
 
