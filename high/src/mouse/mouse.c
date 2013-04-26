@@ -14,74 +14,122 @@ void initializeMouse(Mouse **mouse) {
 	(*mouse)->ori = 0;
 	(*mouse)->row = 15;
 	(*mouse)->col = 0;
-	// flood(mouse->mCell);
+	(*mouse)->cells = (mCell**) malloc(sizeof(mCell*) * 16);
+	memset((*mouse)->cells,0,sizeof((*mouse)->cells));
+	int i;
+	for (i = 0; i < 16; i++) {
+		(*mouse)->cells[i] = (mCell*) malloc(sizeof(mCell) * 16);
+		memset((*mouse)->cells[i],0,sizeof((*mouse)->cells[i]));
+	}
 }
 
-void flood(Maze *maze, Mouse *mouse) {
-	// 1. Let variable level = 0
+void floodMouseMap(Maze *maze, Mouse *mouse) {
+	// 1. Set variable lvl to 0
+	int i, j;
 	int lvl = 0;
-	// 2. Initialize the array DistanceValue
-	// so that all values = 255.
-	int i, j, k=255;
+
+	// 2. Initialize the distance values for the distance-flood
+	// map to 255 indicating that it is not assigned
+
+	initializeFloodMap(mouse);
+	// 3. Place destination cells in stack called currentLvl
+	// Destination cells are (7,7),(7,8),(8,7),(8,8)
+	Stack *currentLvl = initializeStack();
+	for (i = 7; i < 9; i++) {
+		for (j = 7; j < 9; j++) {
+			Coordinates * dest = (Coordinates*)malloc(sizeof(Coordinates));
+			dest->row = i;
+			dest->col = j;
+			push(currentLvl, dest);
+		}
+	}
+	printf("currentLvl->count = %d\n", currentLvl->count);
+
+	// 4. Initialize a second array called nextLvl
+	Stack *nextLvl = initializeStack();
+
+	begin:
+	// 5. While currentLvl is not empty
+	while (currentLvl->count != 0) {
+		// 6. Remove a cell from currentLvl
+		Coordinates *coor = (Coordinates*) malloc(sizeof(Coordinates));
+		memset(coor, 0, sizeof(coor));
+		coor = (Coordinates*)pop(currentLvl);
+		printf("coor->row: %d\n",coor->row);
+		printf("coor->col: %d\n",coor->col);
+		// 7. If Distance Value (cell) = 255 then let Distance Value = lvl
+		if (mouse->cells[coor->row][coor->col].distance == 255) {
+			mouse->cells[coor->row][coor->col].distance = lvl;
+			// 7a. Place all open neighbors of cell into nextLvl
+			printf("lvl: %d\n",lvl);
+			Stack * n = neighbors(coor, mouse);
+			printf("neighbors->count: %d\n",n->count);
+			append(nextLvl, n);
+			free(n);
+			printf("currentLvl->count(while) = %d\n", currentLvl->count);
+		}
+		// 8. The currentLvl is now empty
+	}
+	if (nextLvl->count != 0) {
+		lvl++;
+		append(currentLvl, nextLvl);
+		free(nextLvl);
+		nextLvl=initializeStack();
+		goto begin;
+	}
+	printf("Stay pau");
+}
+
+Stack* neighbors(Coordinates *coor, Mouse *mouse) {
+	int row = coor->row, col = coor->col;
+	Stack *neighbors = initializeStack();
+	// It is only considered a neighbor if there is no wall seperating the two cells
+	if (!mouse->cells[coor->row][coor->col].north) {
+		Coordinates *north = (Coordinates*) malloc(sizeof(Coordinates));
+		north->row = row - 1;
+		north->col = col;
+		push_unique(neighbors, north);
+	}
+	if (!mouse->cells[coor->row][coor->col].east) {
+		Coordinates *east = (Coordinates*) malloc(sizeof(Coordinates));
+		east->row = row;
+		east->col = col + 1;
+		push_unique(neighbors, east);
+	}
+	if (!mouse->cells[coor->row][coor->col].south) {
+		Coordinates *south = (Coordinates*) malloc(sizeof(Coordinates));
+		south->row = row + 1;
+		south->col = col;
+		push_unique(neighbors, south);
+	}
+	if (!mouse->cells[coor->row][coor->col].west) {
+		Coordinates *west = (Coordinates*) malloc(sizeof(Coordinates));
+		west->row = row;
+		west->col = col - 1;
+		push_unique(neighbors, west);
+	}
+	return neighbors;
+}
+
+void initializeFloodMap(Mouse* mouse) {
+	int i, j;
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 16; j++) {
-			mouse->cells[i][j]->distance = k;
-		}
-	}
-	// 3. Place the destination cells in an array
-	// called CurrentLevel
-	Coordinates* currentLvl[256];
-	int clSize=0;
-	Coordinates* coor = (Coordinates *)malloc(sizeof(Coordinates));
-	for (i = 7; i < 9; i++) {
-		for(j = 7; j < 9; j++) {
-			coor->row=i;
-			coor->col=j;
-			currentLvl[clSize++]=coor;
-		}
-	}
-	// 4. Initialize a second array called next lvl
-	Coordinates* nextLvl[256];
-	int nlSize=0;
-	int dist;
-	// 5. Repeat the following instructions until currentLvl is empty
-	while(nlSize!=0) {
-	while(clSize!=0) {
-		// use a cell in the currentlvl
-		mCell* currentCell= mouse->
-						cells[currentLvl[clSize]->row]
-		                     [currentLvl[clSize]->col];
-		dist = currentCell->distance;
-		if(dist==255) {
-			currentCell->distance=lvl;
-			if((currentCell->walls||0111)==0111){
-				nextLvl[nlSize]->row=currentLvl[clSize]->row-1;
-				nextLvl[nlSize]->col=currentLvl[clSize]->col;
-				nlSize++;
+			mouse->cells[i][j].distance = 255;
+			if(i==0) {
+				mouse->cells[i][j].north=1;
 			}
-			if((currentCell->walls||1011)==1011){
-							nextLvl[nlSize]->row=currentLvl[clSize]->row;
-							nextLvl[nlSize]->col=currentLvl[clSize]->col+1;
-							nlSize++;
+			if(i==15) {
+				mouse->cells[i][j].south=1;
 			}
-			if((currentCell->walls||1101)==1101){
-							nextLvl[nlSize]->row=currentLvl[clSize]->row+1;
-							nextLvl[nlSize]->col=currentLvl[clSize]->col;
-							nlSize++;
+			if(j==0) {
+				mouse->cells[i][j].west=1;
 			}
-			if((currentCell->walls||1110)==1110){
-							nextLvl[nlSize]->row=currentLvl[clSize]->row;
-							nextLvl[nlSize]->col=currentLvl[clSize]->col-1;
-							nlSize++;
+			if(j==15) {
+				mouse->cells[i][j].east=1;
 			}
 		}
-		clSize--;
 	}
-	lvl++;
-	for(i=0;i<256;i++) {
-		currentLvl[i] = nextLvl[i];
-	}
-}
 }
 
 void wallFollower(Maze *maze, Mouse *mouse) {

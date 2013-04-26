@@ -25,8 +25,11 @@ typedef struct Stack {
 	int count;
 } Stack;
 
+Stack* initializeStack();
+void append(Stack* result, Stack* appendee);
 void push(Stack *stack, void *newElem);
 void *pop(Stack *stack);
 int push_unique(Stack *stack, void *newElem);
+Stack* add(Stack* one, Stack* two);
 
 #endif /* STACK_ */

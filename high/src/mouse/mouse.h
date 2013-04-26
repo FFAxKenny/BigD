@@ -13,7 +13,10 @@
 
 
 typedef struct mCell {
-    unsigned walls:4; // Wall values: xxxx = NESW (0 false | 1 true)
+	int north;
+	int east;
+	int south;
+	int west;
     int distance;
 } mCell; //
 
@@ -21,7 +24,7 @@ typedef struct Mouse {
     int ori; // Orientation. Which way the mouse is facing. 0123=NESW
     int row; // Location. Where the mouse is in the maze
     int col;
-    mCell* (*cells)[16];
+    mCell **cells;
 } Mouse;
 
 void initializeMouse(Mouse **mouse);
@@ -34,4 +37,6 @@ void faceRight(Mouse *mouse);
 void faceBack(Mouse *mouse);
 void wallFollower(Maze *maze, Mouse *mouse);
 void floodFill(Maze *maze, Mouse *mouse);
-void flood(Maze *maze, Mouse *mouse);
+void floodMouseMap(Maze *maze, Mouse *mouse);
+void initializeFloodMap(Mouse* mouse);
+Stack* neighbors(Coordinates *coor, Mouse *mouse);
