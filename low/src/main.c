@@ -29,7 +29,8 @@ _FGS(GCP_OFF)                                       // Turn off Code Protect
 
 int main(void) {
     TheBirthOfBigD();               /* Initialize I/O, ADC, Timer, & Switch */
-
+    Mouse* mouse;
+    initializeMouse(&mouse);
 
     QueueAheadWall = 0;
     QueueRightWall = 1;
@@ -38,7 +39,7 @@ int main(void) {
 
     while(1) {
 
-
+/*
         if(QueueRightWall == 1 && QueueLeftWall == 1 && QueueAheadWall == 1)
         {
             FaceRight();
@@ -53,7 +54,25 @@ int main(void) {
             FaceRight();
         }
         
-            MoveForward(216);
+*/
+	// Update walls information
+	if(QueueAheadWall) {
+		mouse->cells[mouse->row][mouse->col].north = 1;
+		mouse->cells[mouse->row-1][mouse->col].south = 1;
+	}
+	if(QueueRightWall) {
+		mouse->cells[mouse->row][mouse->col].east = 1;
+		mouse->cells[mouse->row][mouse->col+1].west = 1;
+	}
+	if(QueueLeftWall) {
+		mouse->cells[mouse->row][mouse->col].west = 1;
+		mouse->cells[mouse->row][mouse->col-1].east = 1;
+	}
+
+	// Flood the maze with new distance values
+	floodMouseMap(mouse);
+	moveLowestDistCell(mouse);
+        MoveForward(mouse,216);
         
             
         

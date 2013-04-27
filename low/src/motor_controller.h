@@ -24,10 +24,10 @@
     void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void);
 
     /* High-Level Functions */
-    void MoveForward(int distance);
-    void FaceLeft(void);
-    void FaceRight(void);
-    void FaceBack(void);
+    void MoveForward(Mouse* mouse, int distance);
+    void FaceLeft(Mouse* mouse);
+    void FaceRight(Mouse* mouse);
+    void FaceBack(Mouse* mouse);
 
     /* Low-Level Functions */
     void StepLMotor(Motor motor);

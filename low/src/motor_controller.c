@@ -203,7 +203,7 @@ int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft,
 
 
 
-    void MoveForward(int distance) {
+    void MoveForward(Mouse* mouse, int distance) {	
 
         MoveStage = 1;
         TurnStage = 0;
@@ -237,9 +237,20 @@ int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft,
              QueueRightWall = 1;
             }
 
+	// Adjust orientation variable and mouse coordinates
+	  // the mouse is facing north
+	if(mouse->ori == 0)
+		mouse->row = mouse->row - 1; // north
+	else if(mouse->ori == 1)
+		mouse->col = mouse->col + 1; // east
+	else if(mouse->ori == 2)
+		mouse->row = mouse->row + 1;  // south
+	else if(mouse->ori == 3)
+		mouse->col = mouse->col - 1; // west
+
     }
 
-    void FaceRight(void){
+    void FaceRight(Mouse* mouse){
         MoveStage = 1;
         TurnStage = 1;
          // Reset Motor Step Count
@@ -268,13 +279,18 @@ int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft,
              QueueRightWall = 1;
             }
 
-    
-
-         
-        
+   	// Adjust ori for the mouse
+	if (mouse->ori == 0)
+		mouse->ori = 1;
+	else if (mouse->ori == 1)
+		mouse->ori = 2;
+	else if (mouse->ori == 2)
+		mouse->ori = 3;
+	else if(mouse->ori == 3)
+		mouse->ori = 0;          
     }
 
-    void FaceLeft() {
+    void FaceLeft(Mouse* mouse) {
         MoveStage = 1;
         TurnStage = 1;
          // Reset Motor Step Count
@@ -303,7 +319,20 @@ int TurnStage, MoveStage, QueueAheadWall, StopTracking, TurnLeft,
              QueueRightWall = 1;
             }
 
-    
+	// Adjust the ori for the mouse
+	if (mouse->ori == 0)
+		mouse->ori = 3;
+	else if (mouse->ori == 1)
+		mouse->ori = 0;
+	else if (mouse->ori == 2)
+		mouse->ori = 1;
+	else if(mouse->ori == 3)
+		mouse->ori = 2;    
+    }
+	
+    void FaceBack(Mouse* mouse) {
+	FaceLeft(mouse);
+	FaceLeft(mouse);
     }
 
     void StepLMotor(Motor motor) {
