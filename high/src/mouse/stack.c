@@ -3,43 +3,53 @@
  *
  *  Created on: Mar 28, 2013
  *      Author: ejay
- */
+*/
 
 #include"stack.h"
 
-Stack* initializeStack() {
-	Stack* stack = (Stack*)malloc(sizeof(Stack));
-	memset(stack,0,sizeof(Stack));
+Stack currentLvl;
+Stack neigh;
+Stack nextLvl;
+Stack oldCells;
+
+void initializeStack(Stack* stack) {
 	stack->count=0;
-	stack->head=NULL;
-	return stack;
+        int i;
+        for(i=0;i<100;i++) {
+            stack->coordinates[i].row = 255;
+            stack->coordinates[i].col = 255;
+        }
 }
 
-void push(Stack *stack, void *newElem) {
-	Node *newNode = (Node*)malloc(sizeof(Node));
-	memset(newNode,0,sizeof(newNode));
-	newNode->next = stack->head;
-	newNode->content = newElem;
-	stack->head = newNode;
-	stack->count++;
+void push(Stack* stack, Coordinates newElem) {
+    stack->coordinates[stack->count]=newElem;
+    stack->count++;
 }
 
-int push_unique(Stack *stack, void *newElem) {
-	Node *newNode = (Node*)malloc(sizeof(Node));
-	memset(newNode,0,sizeof(newNode));
+int check(Stack* stack, Coordinates c) {
 	int i;
-	for(i=0,newNode=stack->head; i<stack->count;i++,newNode=newNode->next) {
-		if(memcmp(newNode->content,newElem,sizeof(int)*4) == 0) {
-			return 1; //indicate failure
-		}
+	for(i=0;i<stack->count;i++) {
+		if((stack->coordinates[i].col ==  c.col) &&
+				(stack->coordinates[i].row ==  c.row)) return 1;
 	}
-	push(stack,newElem); // re-use push
 	return 0;
 }
 
-Stack* add(Stack* one, Stack* two) {
-	Stack* result = initializeStack();
-	void *content=NULL;
+int push_unique(Stack* stack, Coordinates newElem) {
+    int i;
+    for(i=0;i<stack->count;i++) {
+        if(stack->coordinates[i].row == newElem.row &&
+           stack->coordinates[i].col == newElem.col) {
+            return 1;
+        }
+    }
+    push(stack,newElem);
+    return 0;
+}
+
+void add(Stack* result, Stack* one, Stack* two) {
+	initializeStack(result);
+	Coordinates content;
 	while(one->count!=0) {
 		content=pop(one);
 		push(result,content);
@@ -48,30 +58,22 @@ Stack* add(Stack* one, Stack* two) {
 		content=pop(two);
 		push(result,content);
 	}
-	return result;
 }
 
 void append(Stack* result, Stack* appendee) {
-	void* content=NULL;
+	Coordinates content;
 	while(appendee->count!=0) {
 		content=pop(appendee);
 		push(result,content);
 	}
 }
 
-void* pop(Stack *stack) {
-	Node* temp = (Node*)malloc(sizeof(Node));
-	memset(temp,0,sizeof(temp));
-	void *r=NULL;
-	if(stack->head != NULL) {
-		temp = stack->head;
-		r=stack->head->content;
-		stack->head=stack->head->next;
-		free(temp);
-	}
-	stack->count--;
+
+Coordinates pop(Stack* stack) {
+    Coordinates r;
+    r = stack->coordinates[stack->count-1];
+    stack->coordinates[stack->count-1].col = 255;
+    stack->coordinates[stack->count-1].row = 255;
+    stack->count--;
 	return r;
 }
-
-
-
